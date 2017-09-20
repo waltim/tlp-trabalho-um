@@ -10,10 +10,6 @@ true  = Lambda "t"(Lambda "f"(Var "t"))
 false :: Term
 false = Lambda "t"(Lambda "f"(Var "f"))
 
-ands :: Term
-ands = Lambda "b"(App(Lambda "c"(App(Var "b")(Var "c")))false)
---eval(App ands(App true true))
-
 zero :: Term
 zero = Lambda "s" (Lambda "z" (Var "z"))
 
@@ -25,6 +21,24 @@ c2 = Lambda "s"(Lambda "z"(App(Var "s")(App(Var "s")(Var "z"))))
 
 c3 :: Term
 c3 = Lambda "s"(Lambda "z"(App(Var "s")(App(Var "s")(App(Var "s")(Var "z")))))
+
+ands :: Term
+ands = Lambda "b"(App(Lambda "c"(App(Var "b")(Var "c")))false)
+--eval(App ands(App true true))
+-- > \t->\f->t
+--eval(App ands(App true false))
+-- > \t->\f->f
+--eval(App ands(App false true))
+-- >  \t->\f->f
+--eval(App ands(App false false))
+-- > \t->\f->f
+ors :: Term
+ors = Lambda "b"(App(Lambda "c"(App(Var "b")true))(Var "b"))
+--eval(App(App ors true)true)
+-- > \t->\f->t
+
+nots :: Term
+nots = Lambda "b"(App(App(Var "b")false)true)
 --------------------------------------------------------------------------------------------
 scc :: Term
 scc = Lambda "n"(Lambda "s"(Lambda "z"(App(Var "s")(App(App(Var "n")(Var "s"))(Var "z")))))
@@ -41,6 +55,7 @@ times = Lambda "m"(Lambda "n"(App(App(Var "m")(App plus (Var "n")))zero))
 --iszro = λm. m (λx. fls) tru;
 iszro :: Term
 iszro = Lambda "m"(App(App(Var "m")(Lambda "s" false))true)
+
 pair :: Term
 pair = Lambda "f"(Lambda "s"(Lambda "b"(App(App(Var "b")(Var "f"))(Var "s"))))
 --Aplicação de "pair"

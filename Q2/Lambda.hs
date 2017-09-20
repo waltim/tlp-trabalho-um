@@ -13,7 +13,7 @@ instance Show Term where
  show (App term1 term2) = show term1 ++ show term2
 
 eval :: Term -> Term
-eval (Var v)             = undefined
+eval (Var v)             = Var v
 eval (Lambda v body)     = Lambda v body
 eval (App t1 t2)         = eval (subst var t2 body)
  where (Lambda var body) = eval t1

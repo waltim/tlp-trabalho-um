@@ -2,51 +2,65 @@ module StandardLib where
 
 import Lambda
 
+type Id = String
+
 true :: Term
-true = Lambda "t" (Lambda "f" (Var "t"))
+true  = Lambda "t"(Lambda "f"(Var "t"))
 
 false :: Term
-false = Lambda "t" (Lambda "f" (Var "f"))
+false = Lambda "t"(Lambda "f"(Var "f"))
 
 zero :: Term
 zero = Lambda "s" (Lambda "z" (Var "z"))
---------------------------------------------------------------------------------
 
-succ :: Term
-succ = App(Lambda "m"(Lambda "s"(Lambda "z"(Var "s"))))(App(App(Var "m")(Var "s"))(Var "z")) => \m->\s->z->s(m s z)
+c1 :: Term
+c1 = Lambda "s"(Lambda "z"(App(Var "s")(Var "z")))
 
-succ = App(Lambda "m"(Lambda "s"(Lambda "z"(Var "s"))))(App(Var "m")(App(Var "s")(Var "z"))) => \m->\s->z->s(m s z)
+c2 :: Term
+c2 = Lambda "s"(Lambda "z"(App(Var "s")(App(Var "s")(Var "z"))))
 
-succ = Lambda "m"(Lambda "s"(Lambda "z"(App (Var "s")(App(Var "m")(App(Var "s")(Var "z"))))))
+c3 :: Term
+c3 = Lambda "s"(Lambda "z"(App(Var "s")(App(Var "s")(App(Var "s")(Var "z")))))
+--------------------------------------------------------------------------------------------
+scc :: Term
+scc = Lambda "m"(Lambda "s"(Lambda "z"(App(Var "s")(App(App(Var "m")(Var "s"))(Var "z")))))
 
-eval (App t1 t2)         = eval (subst var t2 body)
- where (Lambda var body) = eval t1
+--plus = λm. λn. λs. λz. m s (n s z);
+plus :: Term
+plus = Lambda "m"(Lambda "n"(Lambda "s"(Lambda "z"(App(App(App(App(Var "m")(Var "s"))(Var "n"))(Var "s"))(Var "z")))))
+--eval(App(App plus c3)c2)
 
-subst v t (Var x)
-  | v == x = t
-  | otherwise = Var x
+--times = λm. λn. m (plus n) c0
+times :: Term
+times = Lambda "m"(Lambda "n"(App(App(Var "m")(App plus (Var "n")))zero))
 
-subst v t1 (Lambda x t2)
-  | v == x = Lambda x t2
-  | otherwise = Lambda x (subst v t1 t2)
+--iszro = λm. m (λx. fls) tru;
+iszro :: Term
+iszro = Lambda "m"(App(App(Var "m")(Lambda "s" false))true)
 
-subst v t1 (App t2 t3) = App (subst v t1 t2) (subst v t1 t3)
+pair :: Term
+pair = Lambda "f"(Lambda "s"(Lambda "b"(App(App(Var "b")(Var "f"))(Var "s"))))
+--Aplicação de "pair"
+--App(App pair (Var "v"))(Var "w") ==> \f -> \s -> \b -> bfsvw
+--eval(App(App pair (Var "v"))(Var "w")) ==> \b -> bvw
 
-eval(App succ zero)
-          -------------------------------------succ-----------------------------------    ---------------zero--------------
-eval(App (Lam "m"(Lam "s"(Lam "z"(App (Var "s")(App(Var "m")(App(Var "s")(Var "z"))))))) (Lambda "s" (Lambda "z" (Var "z"))) )
+first :: Term
+first = App(Lambda "p"(Var "p")) true
+--App first (App(App pair (Var "v"))(Var "w"))
+--eval(App first (eval(App(App pair (Var "v"))(Var "w"))))
 
+second :: Term
+second = App(Lambda "p"(Var "p")) false
 
-App(eval(App(Lambda "m"(Lambda "s"(Lambda "z"(Var "s"))))(App(App(Var "m")(Var "s"))(Var "z"))))(Lambda "s"(Lambda"z"(Var "z")))
+zz :: Term
+zz = App(App pair zero) zero
 
-eval(App(Lambda "s"(Lambda "z"(Var "s")))(App(Lambda "s"(Lambda "z"(Var "s")))(App(Var "s")(Var "z")))) ->
+ss :: Term
+ss = App(Lambda "p"(eval(App pair (eval(App second (Var "p"))) )))(App(eval(App plus c1))(eval(App second (Var "p"))))
 
-eval(App(Lambda "s"(Lambda "z"(Var "s")))(App(Var "s")(Var "z"))) -
-
-
-succ = \m.\s.\z. s(m s z)
-
-succ C0 = \m.\s.\z.s(m s z) (\s.\z.z)
-        = \s.\z.s(((\s.\z.z) s) z)
-        = \s.\z.s((\z.z) z)
-        = \s.\z.s z
+--prd = λm. fst (m ss zz)
+prd :: Term
+prd = Lambda "m"(App first(App (Var "m")(App ss zz)))
+--prd = Lambda "m"(App(App(App first (Var "m"))ss)zz)
+--pred :: Term
+--pred = undefined

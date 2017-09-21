@@ -7,7 +7,7 @@ import StandardLib as S
 translate :: R.Expression -> L.Term
 translate (R.B True) = S.true
 translate (R.B False) = S.false
-translate (R.N 0) = S.false
+translate (R.N 0) = S.zero
 translate (R.N m) = L.eval(L.App S.scc (translate(N (m-1))))
 translate (R.Add e1 e2) = L.eval(L.App(L.App S.plus (translate e1))(translate e2))
 translate (R.Sub e1 e2) = L.eval(L.App(L.App S.subt (translate e1))(translate e2))

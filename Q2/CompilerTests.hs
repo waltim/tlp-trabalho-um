@@ -13,8 +13,11 @@ boolF = translate (R.B False)
 int0 = translate (R.N 0)
 int3 = translate (R.N 3)
 
-add2_3 = translate (R.Add (R.N 2)(R.N 3))
-sub5_1 = translate (R.Sub (R.N 5)(R.N 1))
+add2_3 = R.Add (R.N 2)(R.N 3)
+sub5_1 = R.Sub (R.N 5)(R.N 1)
+
+tadd2_3 = translate add2_3
+tsub5_1 = translate sub5_1
 
 andtt = translate (R.And (R.B True)(R.B True))
 andtf = translate (R.And (R.B True)(R.B False))
@@ -30,10 +33,23 @@ nott = translate (R.Not (R.B True))
 notf = translate (R.Not (R.B False))
 
 eq3 = L.eval(L.App(L.App equals int3)c3)
-eq5 = L.eval(L.App(L.App equals add2_3)c5)
-eq4 = L.eval(L.App(L.App equals sub5_1)c4)
-test_for_wrong = L.eval(L.App(L.App equals add2_3)sub5_1)
+eq5 = L.eval(L.App(L.App equals tadd2_3)c5)
+eq4 = L.eval(L.App(L.App equals tsub5_1)c4)
+test_for_wrong = L.eval(L.App(L.App equals tadd2_3)tsub5_1)
 
+ite1 = translate (R.IfThenElse (R.B True) (R.B True) (R.B False))
+ite2 = translate (R.IfThenElse (R.B False) (R.B True) (R.B False))
+ite3 = translate (R.IfThenElse (R.B True) add2_3 sub5_1)
+ite4 = translate (R.IfThenElse (R.B False) add2_3 sub5_1)
+
+let1 = translate (R.Let "x" (R.N 4) (R.Add (R.Ref "x")(R.N 1)))
+leteq = L.eval(L.App(L.App equals let1)c5)
+
+lam = R.Lambda "x" (R.Add (R.Ref "x")(R.N 1))
+
+tlam = translate lam
+
+apl = translate (R.App lam (R.N 4))
 
 test1 = TestCase (assertEqual "should be true" true (L.eval boolT))
 test2 = TestCase (assertEqual "should be false" false (L.eval boolF))
@@ -57,6 +73,15 @@ test16 = TestCase (assertEqual "!false" true notf)
 
 test17 = TestCase (assertEqual "testing for wrong" false test_for_wrong)
 
+test18 = TestCase (assertEqual "If (True) then True else False" true ite1)
+test19 = TestCase (assertEqual "If (False) then True else False" false ite2)
+test20 = TestCase (assertEqual "If (True) then add2_3 else sub5_1" tadd2_3 ite3)
+test21 = TestCase (assertEqual "If (False) then add2_3 else sub5_1" tsub5_1 ite4)
+
+test22 = TestCase (assertEqual "let x=4 in x+1" true leteq)
+
+test23 = TestCase (assertEqual "(\\x->x+1)4" let1 apl)
+
 
 allTests = TestList [ test1
                       , test2
@@ -75,6 +100,12 @@ allTests = TestList [ test1
                       , test15
                       , test16
                       , test17
+                      , test18
+                      , test19
+                      , test20
+                      , test21
+                      , test22
+                      , test23
                       ]
 
 runAll = runTestTT allTests

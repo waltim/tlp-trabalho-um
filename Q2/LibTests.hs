@@ -83,6 +83,11 @@ off = eval(App(App ors false)false)
 nt = eval(App nots true)
 nf = eval(App nots false)
 
+ite1 = eval(App(App(App ite nf)true)false)
+ite2 = eval(App(App(App ite nt)true)false)
+ite3 = eval(App(App(App ite nf)c1)c2)
+ite4 = eval(App(App(App ite nt)c1)c2)
+
 test17 = TestCase (assertEqual "true && true" (true) att)
 test18 = TestCase (assertEqual "true && false" (false) atf)
 test19 = TestCase (assertEqual "false && true" (false) aft)
@@ -96,7 +101,10 @@ test24 = TestCase (assertEqual "false || false" (false) off)
 test25 = TestCase (assertEqual "!true" (false) nt)
 test26 = TestCase (assertEqual "!false" (true) nf)
 
-
+test27 = TestCase (assertEqual "if !false then true else false" true ite1)
+test28 = TestCase (assertEqual "if !true then true else false" false ite2)
+test29 = TestCase (assertEqual "if !false then c1 else c2" c1 ite3)
+test30 = TestCase (assertEqual "if !true then c1 else c2" c2 ite4)
 
 zeroTests = TestList [ test1
                       , test2
@@ -138,3 +146,11 @@ boolTests = TestList [ test17
                       ]
 
 runBools = runTestTT boolTests
+
+iteTests = TestList [ test27
+                    , test28
+                    , test29
+                    , test30
+                    ]
+
+runItes = runTestTT iteTests

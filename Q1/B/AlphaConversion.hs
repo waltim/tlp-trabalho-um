@@ -49,21 +49,24 @@ substitution m@(Var var)   symbol n | var == symbol  = n
                                  | otherwise   = m
 substitution   (App p q)   symbol n = App (substitution p symbol n) (substitution q symbol n)
 substitution m@(Lambda var p) symbol n | var == symbol            = m 
-                                 | var `elem` freeVars n = Lambda newName $ alphaConversion p var newName
+                                 | var `elem` freeVars n = Lambda newName $ conversion p var newName
                                  | otherwise             = Lambda var $ substitution p symbol n
                                  where newName = findUnboundInTerms var [n,p]
 
 findUnboundInTerms :: Symbol -> [Expression] -> Symbol
 findUnboundInTerms originalName _ = originalName ++ "\'"
 
-alphaConversion :: Expression -> Symbol -> Symbol -> Expression
-alphaConversion (Lambda v m) x y | v /= x  = Lambda v $ alphaConversion m x y
+conversion :: Expression -> Symbol -> Symbol -> Expression
+conversion (Lambda v m) x y | v /= x  = Lambda v $ conversion m x y
                                              | y `elem` freeVars m = error (y ++ " \\in FV(" ++ show m ++ ")")
                                              | otherwise           = Lambda y $ substitution m x (Var y)
-alphaConversion (App p q) x y              = App (alphaConversion p x y) (alphaConversion q x y)
-alphaConversion m@(Var v) x y | v == x     = Var y
+conversion (App p q) x y              = App (conversion p x y) (conversion q x y)
+conversion m@(Var v) x y | v == x     = Var y
                                              | otherwise = m
 
--- TODO: finish
-runAlphaConversion :: Expression -> [(Symbol, Symbol)] -> Expression
-runAlphaConversion exp ((a,b):xs) = alphaConversion (exp) (a) (b) : --runAlphaConversion (exp1) (xs)
+alphaConversion :: Expression -> [(Symbol, Symbol)] -> Expression
+alphaConversion (exp) ((a,b):xs) = 
+    let exp1 = conversion (exp) (a) (b) 
+    in 
+    alphaConversion (exp1) (xs)
+alphaConversion exp [] = exp

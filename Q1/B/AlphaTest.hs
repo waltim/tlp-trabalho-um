@@ -28,8 +28,6 @@ exp7 = Lambda "a" $ Lambda "b" $ (Var "a" `App` Var "b")
 -- \a.\b.abc
 exp8 = Lambda "a" $ Lambda "b" $ (Var "a" `App` Var "b" `App` Var "c")
 
--- \a.\a.aaz
-exp9 = Lambda "a" $ Lambda "a" $ (Var "a" `App` Var "a" `App` Var "z")
 
 -- Test cases for alpha equivalence
 testEquivalence1 = TestCase (assertEqual "exp1 alphaEquivalence exp2"  (exp1 `alphaEquivalence` exp2) (True))
@@ -37,25 +35,24 @@ testEquivalence2 = TestCase (assertEqual "exp3 alphaEquivalence exp4"  (exp3 `al
 testEquivalence3 = TestCase (assertEqual "exp3 alphaEquivalence exp5"  (exp3 `alphaEquivalence` exp5) (False))
 testEquivalence4 = TestCase (assertEqual "exp6 alphaEquivalence exp7"  (exp6 `alphaEquivalence` exp7) (True))
 testEquivalence5 = TestCase (assertEqual "exp6 alphaEquivalence exp8"  (exp6 `alphaEquivalence` exp8) (False))
-testEquivalence6 = TestCase (assertEqual "exp6 alphaEquivalence exp9"  (exp6 `alphaEquivalence` exp9) (True))
 
 testsEquivalence = TestList [TestLabel "testEquivalence1" testEquivalence1,
     TestLabel "testEquivalence2" testEquivalence2,
     TestLabel "testEquivalence3" testEquivalence3,
     TestLabel "testEquivalence4" testEquivalence4,
-    TestLabel "testEquivalence5" testEquivalence5,
-    TestLabel "testEquivalence6" testEquivalence6]
+    TestLabel "testEquivalence5" testEquivalence5]
 
 -- To run all tests for alpha equivalence
 runEquivalenceTests = runTestTT testsEquivalence
 
 -- Test cases for alpha conversion
-testConversion1 = TestCase (assertEqual "exp1 replace 'x' for 'y'" (alphaConversion exp1 "x" "y") (exp2))
---testConversion2 = TestCase (assertEqual "exp6 replace 'x' for 'a'" (alphaConversion exp6 "x" "a") (exp7))
---testConversion3 = TestCase (assertEqual "exp6 replace 'x' for 'a'" (alphaConversion exp6 "x" "a") (exp7))
+testConversion1 = TestCase (assertEqual "alphaConversion exp1 [('x','y')]" (alphaConversion exp1 [("x","y")]) (exp2))
+testConversion2 = TestCase (assertEqual "alphaConversion exp4 [('x', 'a'), ('y','b'), ('z','c')]" (alphaConversion exp3 [("x", "a"), ("y","b"), ("z","c")]) (exp4))
+testConversion3 = TestCase (assertEqual "alphaConversion exp6 [('x', 'a'), ('y','b')]" (alphaConversion exp6 [("x", "a"), ("y","b")]) (exp7))
 
-testsConversion = TestList [TestLabel "testConversion1" testConversion1]
-    --,TestLabel "testConversion2" testConversion2]
+testsConversion = TestList [TestLabel "testConversion1" testConversion1,
+    TestLabel "testConversion2" testConversion2,
+    TestLabel "testConversion3" testConversion3]
 
 -- To run all tests for alpha conversion
 runConversionTests = runTestTT testsConversion

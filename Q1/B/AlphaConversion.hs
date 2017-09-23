@@ -63,3 +63,7 @@ alphaConversion (Lambda v m) x y | v /= x  = Lambda v $ alphaConversion m x y
 alphaConversion (App p q) x y              = App (alphaConversion p x y) (alphaConversion q x y)
 alphaConversion m@(Var v) x y | v == x     = Var y
                                              | otherwise = m
+
+-- TODO: finish
+runAlphaConversion :: Expression -> [(Symbol, Symbol)] -> Expression
+runAlphaConversion exp ((a,b):xs) = alphaConversion (exp) (a) (b) : --runAlphaConversion (exp1) (xs)

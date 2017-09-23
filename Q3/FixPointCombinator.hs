@@ -1,4 +1,4 @@
-module FixpointC where
+module FixPointCombinator where
 
 newtype Mu a = Roll (Mu a -> (a -> a))
 unroll (Roll x) = x

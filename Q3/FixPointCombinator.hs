@@ -1,18 +1,21 @@
 module FixPointCombinator where
 
-newtype Mu a = Roll (Mu a -> (a -> a))
-unroll (Roll x) = x
-
-fix :: (a -> a) -> a -> a
-fix = \f ->       (\x z -> f ((unroll x) x z))
-            (Roll (\x z -> f ((unroll x) x z)))
-
-facF :: (Int -> Int) -> Int -> Int
-facF f x
-  | x <= 0    = 1
-  | otherwise = x * (f (x-1))
-
-fac :: Int -> Int
-fac = fix facF undefined
-
-teste = fix (\x -> x + 1) 4
+newtype Mu a = Roll
+  { unroll :: Mu a -> a }
+ 
+fix :: (a -> a) -> a
+fix = g <*> (Roll . g)
+  where
+    g = (. (>>= id) unroll)
+ 
+fac :: Integer -> Integer
+fac =
+  fix $
+  \f n ->
+     (if n <= 0
+        then 1
+        else n * f (n - 1))
+ 
+fibs :: [Integer]
+fibs =
+  fix $ (0 :) . (1 :) . (fix (\f (x:xs) (y:ys) -> x + y : f xs ys) <*> tail)

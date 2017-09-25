@@ -34,14 +34,7 @@ c5 = Lambda "s"(Lambda "z"(App(Var "s")(App(Var "s")(App(Var "s")(App(Var "s")(A
 
 ands :: Term
 ands = Lambda "b"(App(Lambda "c"(App(Var "b")(Var "c")))false)
---eval(App ands(App true true))
--- > \t->\f->t
---eval(App ands(App true false))
--- > \t->\f->f
---eval(App ands(App false true))
--- > \t->\f->f
---eval(App ands(App false false))
--- > \t->\f->f
+
 ors :: Term
 ors = Lambda "b"(App(Lambda "c"(App(Var "b")true))(Var "b"))
 --eval(App(App ors true)true)
@@ -87,7 +80,6 @@ ss :: Term
 ss = Lambda "p"(App(App pair(App second (Var "p")))(App(App plus c1)(App second (Var "p"))))
 
 -- prd = λm. fst (m ss zz)
--- prd = lambda m: fst((m)(ss)(zz))
 prd :: Term
 prd = Lambda "m"(App first(App(App (Var "m") ss)zz))
 
@@ -96,13 +88,8 @@ subt :: Term
 subt = Lambda "m"(Lambda "n"(App(App(Var "n")prd)(Var "m")))
 --eval(App(App subt c1)c1)
 
--- equal = lambda m: lambda n: And(iszro((m)(prd)(n)))(iszro((n)(prd)(m)))
 equals :: Term
 equals = Lambda "m"(Lambda "n"(App ands(App(App iszro (App(App(Var "m")prd)(Var "n")))(App iszro (App(App(Var "n")prd)(Var "m"))))))
-
---equal = lambda m: lambda n: iszro(sub(m)(n))
---equals = Lambda "m"(Lambda "n"(App iszro(App(App subt (Var "m"))(Var "n")))) -- ====> Para esta funcionar o maior termo tem de ser aplicado antes!
-                                                                               --         caso contrário avalia para true!
 
 ite :: Term
 ite = Lambda "p"(Lambda "a"(Lambda "b"(App(App(Var "p")(Var "a"))(Var "b"))))

@@ -1,11 +1,15 @@
 \section{Introdução}
 \label{secao:introducao}
 
-O conceito de \textit{alfa-equivalência} (ou $\alpha$-equivalência), presente no cálculo-$\lambda$, é utilizado para representar a equivalência entre duas expressões. Para que a equivalência de fato ocorra, é necessário que uma das expressões sejam obtidas da outra expressão, por meio da substituição não-conflitante de \emph{variáveis livres}. Entende-se por \emph{variável livre}, uma variável utilizada dentro de uma função, de forma que essa variável não sejam um parâmetro formal para essa função e nem que ela esteja definida no corpo da função \cite{gabbay2000theory}.
+O conceito de \textit{alfa-equivalência} (ou $\alpha$-equivalência), utilizada no cálculo-$\lambda$, é utilizado para representar a equivalência entre duas expressões. Para que a equivalência de fato ocorra, é necessário que uma das expressões sejam obtidas da outra expressão, por meio da substituição não-conflitante de \emph{variáveis livres}. Entende-se por \emph{variável livre}, uma variável utilizada dentro de uma função, de forma que essa variável não sejam um parâmetro formal para essa função e nem que ela esteja definida no corpo da função \cite{gabbay2000theory}.
 
 De um modo mais simplificado, a \textit{alfa-equivalência} capta a noção de que os nomes das variáveis que estão vinculadas a função não são importantes. Dessa forma, o que importa nesse contexto, é a estrutura vinculativa no qual as variáveis induzem na função. Assim, o principal objetivo da \textit{alfa-equivalência} é garantir que nenhuma variável vinculada tenha o mesmo nome de uma variável livre no termo que está sendo substituído \cite{calves2008nominal}. 
 
-Dessa maneira, a \textit{alfa-equivalência} garante um meio de evitar a captura de variáveis durante o renomeamento (ou substituição) das variáveis que estão vinculadas em uma abstração $\lambda$. Um exemplo de \textit{alfa-equivalência} é mostrado a seguir onde, a expressão \ref{equacao:um} é \textit{alfa-equivalente} a expressão \ref{equacao:dois}.
+Dessa maneira, a \textit{alfa-equivalência} garante um meio de evitar a captura de variáveis durante o renomeamento (ou substituição) das variáveis que estão vinculadas em uma abstração $\lambda$, ou seja, a partir dela, é possível resolver problemas de conflitos de variáveis presentes em abstrações lambda. 
+
+\subsection{Exemplos}
+
+Para que duas expressões-$\lambda$ sejam \textit{alfa-equivalentes}, a única diferença entre elas deve ser o renomeamento das variáveis vinculadas a função. Um exemplo de \textit{alfa-equivalência} é mostrado a seguir onde, a expressão \ref{equacao:um} é \textit{alfa-equivalente} a expressão \ref{equacao:dois}.
 
 \begin{equation}
 	\label{equacao:um}
@@ -17,4 +21,16 @@ Dessa maneira, a \textit{alfa-equivalência} garante um meio de evitar a captura
 	\lambda\\a.\lambda\\b.abz
 \end{equation}
 
-A substituição de variáveis aplicada na expressão \ref{equacao:um}, que resultou na expressão \ref{equacao:dois} é denotada da seguinte forma: $[x/a]$,$[y/b]$. 
+A substituição de variáveis aplicada na expressão \ref{equacao:um}, que resultou na expressão \ref{equacao:dois}, é denotada da seguinte forma: $[x/a]$,$[y/b]$. Um exemplo onde não há \emph{alfa equivalência}  é mostrado as expressões a seguir.
+
+\begin{equation}
+	\label{equacao:tres}
+	\lambda\\x.\lambda\\xy
+\end{equation}
+
+\begin{equation}
+	\label{equacao:quatro}
+	\lambda\\y.\lambda\\yy
+\end{equation}
+
+A substituição $[x/y]$, aplicada na expressão \ref{equacao:tres} resulta na expressão \ref{equacao:quatro}, fazendo com que as duas expressões não sejam \textit{alfa-equivalentes}, uma vez que nem sempre o processo de substituição de variáveis é algo trivial de ser realizado \cite{pierce2002types}.

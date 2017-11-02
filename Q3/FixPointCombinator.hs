@@ -1,21 +1,20 @@
 module FixPointCombinator where
+	
+churchFac = \n ->
+        App
+            (App
+                (App churchITE (App isZero n))
+                    (App successor zeroc))
+                        (App (App mult (churchFac (App predecessor n))) n)
 
-newtype Mu a = Roll
-  { unroll :: Mu a -> a }
- 
-fix :: (a -> a) -> a
-fix = g <*> (Roll . g)
-  where
-    g = (. (>>= id) unroll)
- 
-fac :: Integer -> Integer
-fac =
-  fix $
-  \f n ->
-     (if n <= 0
-        then 1
-        else n * f (n - 1))
- 
-fibs :: [Integer]
-fibs =
-  fix $ (0 :) . (1 :) . (fix (\f (x:xs) (y:ys) -> x + y : f xs ys) <*> tail)
+pureChurchFac = Lambda "f" $ Lambda "n" $
+        App
+            (App
+                (App churchITE (App isZero (Var "n")))
+                    (App successor zeroc))
+                        (App (App mult (App (Var "f") (App predecessor (Var "n")))) (Var "n") )
+
+fix = Lambda "f" $ App (Lambda "x" $ App (Var "f") (Lambda "y" (App (App (Var "x") (Var "x")) (Var "y"))))
+                       (Lambda "x" $ App (Var "f") (Lambda "y" (App (App (Var "x") (Var "x")) (Var "y"))))
+
+ycomb = Lambda "p" $ App (Lambda "f" $ App (Var "p") (App (Var "f") (Var "f"))) (Lambda "f" $ App (Var "p") (App (Var "f") (Var "f")))

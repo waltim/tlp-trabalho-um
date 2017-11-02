@@ -5,7 +5,7 @@ type Id = String
 data Term = Var Id
           | Lambda Id Term
           | App Term Term
- deriving(Read, Eq)
+ 		  deriving(Read, Eq)
 
 instance Show Term where
  show (Var x) = x

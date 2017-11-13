@@ -22,15 +22,13 @@
 
       type RItem = (Label, Term)
 
-      type SItem = (Term, Type) 
-
       data Type = TBool
                 | TInt
                 | TString 
                 | TUnit
                 | TRecord [Maybe Type]
                 | TArrow Type Type
-                | TSum (+) SItem SItem
+                | TSum (+) Type Type
            deriving(Eq, Show)
 
       data Term = Var Id
@@ -45,7 +43,7 @@
                 | Projection Term Label
                 | IfThenElse Term Term Term
                 | Add Term Term
-                | Sum Term TSum
+                | Sum Record Record
               deriving(Eq, Show)  
 
       data Value = VBool Bool
@@ -54,7 +52,7 @@
                  | VUnit
                  | VRecord [RItem]
                  | VFunction (Id, Type) Term
-                 | VSum SItem          
+                 | VSum Record          
                  
 
       interp :: Term -> Value

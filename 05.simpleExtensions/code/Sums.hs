@@ -69,8 +69,8 @@ data Value = VBool Bool
         deriving(Eq, Show) 
 
 interp :: Term -> Value
-interp (Inl Term)                    = VInl Term
-interp (Inr Term)                    = VInr Term
+interp (Inl items)                    = VInl Term
+interp (Inr items)                    = VInr Term
 interp (Record items)             = VRecord items
 interp (Tuple items)              = VTuple items 
 interp (RProjection label record) = VRProjection (searchRecord (label) (record))
